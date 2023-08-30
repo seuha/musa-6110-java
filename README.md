@@ -71,7 +71,7 @@ There will be two structured projects that everyone will take part in:
 ## Work Evaluation & Feedback
 
 Regarding grading, your successful completion of the class will be dependent on the successful completion of the minimum requirements of the three projects laid out above.
-
+  
 More thorough evaluation of and feedback on your work will come in the form of:
 1. Code reviews -- You will submit pull requests (PRs) which the course instructors will leave feedback and suggestions on.
 2. Linters -- You will learn to read the output from linters and accessibility checkers, and to use them to debug and improve your work.
