@@ -68,6 +68,14 @@ There will be two structured projects that everyone will take part in:
 
    Final projects will be done in groups or independently — criteria for success will be hammered out in the final project proposal and group projects (if we have any) will be expected to engage with a wider scope and greater difficulty than individual projects. Group projects will also leverage the power of GitHub to make collaboration simpler and more transparent for grading purposes (this will make more sense once you're familiar with GitHub).
 
+## Work Evaluation & Feedback
+
+Regarding grading, your successful completion of the class will be dependent on the successful completion of the minimum requirements of the three projects laid out above.
+
+More thorough evaluation of and feedback on your work will come in the form of:
+1. Code reviews -- You will submit pull requests (PRs) which the course instructors will leave feedback and suggestions on.
+2. Linters -- You will learn to read the output from linters and accessibility checkers, and to use them to debug and improve your work.
+
 ## Software
 * Code Editors
   * [Visual Studio Code](https://code.visualstudio.com/)
