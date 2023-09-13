@@ -32,3 +32,4 @@ From elsewhere on the web:
 * [Map Tile Zoom Levels](https://leafletjs.com/examples/zoom-levels/) -- from the Leaflet documentation
 * [Using Custom Icons](https://leafletjs.com/examples/custom-icons/) -- from the Leaflet documentation
 * [Creating Choropleth Maps](https://leafletjs.com/examples/choropleth/) -- from the Leaflet Documentation
+* [Path Style Options](https://leafletjs.com/reference.html#path-option)
