@@ -14,5 +14,6 @@
 
 ## Resources
 
+* [Browser Developer Tools](https://github.com/musa-6110-fall-2023/course-info/blob/main/resources/developer-consoles.md) -- in this repository's _resources/_ folder
 * [CSS Selectors](https://github.com/musa-6110-fall-2023/course-info/blob/main/resources/css-selectors.md) -- in this repository's _resources/_ folder
 * [CSS Guides on MDN](https://developer.mozilla.org/en-US/docs/Learn/CSS/Building_blocks#guides) -- fairly technical, but highly thorough guides on CSS selectors, attributes, and more.
