@@ -1,5 +1,5 @@
-import * as L from 'https://unpkg.com/leaflet@1.9.4/dist/leaflet-src.esm.js';
-import * as csv from 'https://www.unpkg.com/csv-parse@5.5.0/dist/esm/sync.js';
+import * as L from 'https://cdn.skypack.dev/leaflet@1.9.4';
+import * as csv from 'https://cdn.skypack.dev/csv-parse@5.5.0/sync.js';
 import * as d3ScaleChromatic from 'https://cdn.skypack.dev/d3-scale-chromatic@3';
 
 const d3 = {
@@ -39,13 +39,13 @@ function initMap() {
 /**
  * Download and index the demographic data as a CSV. Each record of the CSV
  * contains the census variables P10_001N - P10_009N, followed by information
- * to construct a GeoID (state, county, tract, and block).
+ * to construct a GeoID (state, county, tract, and blockgroup).
  *
  * @return {object} An object literal mapping from Census GEOIDs to arrays of
  *                  demographic values.
  */
 async function downloadDemographicData() {
-  const dmgResp = await fetch('../data/phl_block_dmg.csv');
+  const dmgResp = await fetch('../data/phl_blockgroup_dmg.csv');
   const dmgText = await dmgResp.text();
   const dmg = csv.parse(dmgText, {
     columns: false, // Don't generate object literals -- just use arrays
@@ -65,11 +65,11 @@ async function downloadDemographicData() {
 /**
  * Download Philadelphia Census geography GeoJSON.
  *
- * @return {FeatureCollection} A feature collection representing block
+ * @return {FeatureCollection} A feature collection representing blockgroup
  *                             geographies in Philadelphia.
  */
 async function downloadGeographicData() {
-  const geoResp = await fetch('../data/phl_blocks.geojson');
+  const geoResp = await fetch('../data/phl_blockgroups.geojson');
   const geoJson = await geoResp.json();
 
   return geoJson;
@@ -112,17 +112,17 @@ function maximal(arr, fn) {
 }
 
 /**
- * Get the GeoID of a given block.
+ * Get the GeoID of a given blockgroup.
  *
- * @param {Feature} feature A feature representing the Census block
- * @return {string} The GeoID of the block.
+ * @param {Feature} feature A feature representing the Census blockgroup
+ * @return {string} The GeoID of the blockgroup.
  */
 function getGeoID(feature) {
-  return feature.properties['GEOID20'];
+  return feature.properties['GEOID'];
 }
 
 /**
- * Calculate demographic summary information for a given block record.
+ * Calculate demographic summary information for a given blockgroup record.
  *
  * @param {Array} dmgRecord An array of demographic information, as loaded
  *                          from a CSV
@@ -148,7 +148,7 @@ function getDemographicSummary(dmgRecord) {
 /**
  * Construct a path options object for use in styling GeoJSON features.
  *
- * @param {Feature} feature A Census block feature
+ * @param {Feature} feature A Census blockgroup feature
  * @param {Array} dmgData Census demographic data, indexed on GeoID
  * @return {object} Path options for a GeoJSON feature style
  */
@@ -167,7 +167,7 @@ function calcFeatureStyle(feature, dmgData) {
   }
 
   const largestRacePortion = 1.0 * summary.largestRacePop / summary.totalPop;
-  const minSegregatedPortion = 0.65;
+  const minSegregatedPortion = 0.5;
 
   const color = colors[summary.largestRaceIndex];
   const opacity = Math.max(0, (largestRacePortion - minSegregatedPortion) / (1 - minSegregatedPortion));
@@ -192,7 +192,7 @@ function initDataLayer(geoData, dmgData) {
     const record = dmgData[geoid];
     const summary = getDemographicSummary(record);
 
-    return `
+    return summary === null ? 'No statistics<br>available' : `
       ${(summary.largestRacePop * 100.0 / summary.totalPop).toFixed(1)}% ${summary.largestRaceLabel}<br>
       (out of ${summary.totalPop} adults)
     `;
@@ -210,16 +210,30 @@ function initLegend() {
     const colors = d3.schemeCategory10;
 
     // Loop through the races and generate a label and colored square for each
-    let html = '<ul class="legend-entries">';
+    let html = `
+    <h2>Racial Classifications</h2>
+
+    <ul class="legend-entries">
+    `;
+
     for (let i = 0; i < races.length; i++) {
       html += `
         <li class="legend-entry">
           <span class="legend-icon" style="background-color: ${colors[i]};"></span>
-          <span class="legend-label">${races[i]}</span>
+          <span class="legend-label">${races[i].replace(/ /g, '&nbsp;')}</span>
         </li>
       `;
     }
-    html += '</ul>';
+
+    html += `
+    </ul>
+
+    <p class="legend-description"><em>
+      A census block group will only be visible if the percentage of the total
+      population within that block group is dominated (50% or greater) by a
+      single racial classification.
+    </em></p>
+    `;
     div.innerHTML = html;
 
     return div;
