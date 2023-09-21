@@ -198,6 +198,19 @@ function initDataLayer(geoData, dmgData) {
     `;
   });
 
+  dataLayer.on('tooltipopen', (evt) => {
+    evt.layer.setStyle({
+      stroke: true,
+      weight: 2,
+      color: 'gray',
+      opacity: 1,
+    });
+  });
+
+  dataLayer.on('tooltipclose', (evt) => {
+    dataLayer.resetStyle();
+  });
+
   return dataLayer;
 }
 
