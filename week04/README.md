@@ -10,6 +10,7 @@
     - [csv-parse](https://csv.js.org/parse/) for CSV (though there are other popular ones, like [PapaParse](https://www.papaparse.com/))
     - Core JavaScript stuff (like `JSON` and `Math`)
   - Start from [this starting code](demographics-dataviz-start/)
+- [Anatomy of a Web Request](https://docs.google.com/presentation/d/12F814zTAxTzUkuLVLd9bUL4zo8PPklq6QHJdmuQBNJw/edit?usp=sharing)
 
 ## Exercises
 
