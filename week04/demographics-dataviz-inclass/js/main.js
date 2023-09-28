@@ -9,7 +9,7 @@ map.setView([39.96, -75.15], 11);
 
 L.tileLayer('https://tiles.stadiamaps.com/tiles/stamen_toner_lite/{z}/{x}/{y}{r}.png', {
   maxZoom: 19,
-  attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+  attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
 }).addTo(map);
 
 async function downloadGeographicData() {
@@ -76,7 +76,7 @@ const joinedData = {
       type: 'Feature',
       properties: {
         ...feature.properties,
-        demographics: dmgData[feature.properties.GEOID]
+        demographics: dmgData[feature.properties.GEOID],
       },
       geometry: feature.geometry,
     };
