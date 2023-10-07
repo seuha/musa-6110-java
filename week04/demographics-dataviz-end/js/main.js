@@ -222,32 +222,33 @@ function initLegend() {
     const races = RACE_LABELS;
     const colors = d3.schemeCategory10;
 
-    // Loop through the races and generate a label and colored square for each
-    let html = `
-    <h2>Racial Classifications</h2>
+    function* zip(...arrays) {
+      const minLength = Math.min(...arrays.map((arr) => arr.length));
 
-    <ul class="legend-entries">
-    `;
-
-    for (let i = 0; i < races.length; i++) {
-      html += `
-        <li class="legend-entry">
-          <span class="legend-icon" style="background-color: ${colors[i]};"></span>
-          <span class="legend-label">${races[i].replace(/ /g, '&nbsp;')}</span>
-        </li>
-      `;
+      for (let i = 0; i < minLength; ++i) {
+        yield arrays.map((arr) => arr[i]);
+      }
     }
 
-    html += `
-    </ul>
+    // Loop through the races and generate a label and colored square for each
+    div.innerHTML = `
+      <h2>Racial Classifications</h2>
 
-    <p class="legend-description"><em>
-      A census block group will only be visible if the percentage of the total
-      population within that block group is dominated (50% or greater) by a
-      single racial classification.
-    </em></p>
+      <ul class="legend-entries">
+        ${[...zip(races, colors)].map(([race, color]) => `
+          <li class="legend-entry">
+            <span class="legend-icon" style="background-color: ${color};"></span>
+            <span class="legend-label">${race.replace(/ /g, '&nbsp;')}</span>
+          </li>
+        `).join(' ')}
+      </ul>
+
+      <p class="legend-description"><em>
+        A census block group will only be visible if the percentage of the total
+        population within that block group is dominated (50% or greater) by a
+        single racial classification.
+      </em></p>
     `;
-    div.innerHTML = html;
 
     return div;
   };
