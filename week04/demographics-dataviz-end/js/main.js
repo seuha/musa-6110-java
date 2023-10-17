@@ -145,6 +145,8 @@ function getDemographicSummary(dmgRow) {
   };
 }
 
+let THRESHOLD = 0.5;
+
 /**
  * Construct a path options object for use in styling GeoJSON features.
  *
@@ -167,7 +169,7 @@ function calcFeatureStyle(feature, dmgData) {
   }
 
   const largestRacePortion = 1.0 * summary.largestRacePop / summary.totalPop;
-  const minSegregatedPortion = 0.5;
+  const minSegregatedPortion = THRESHOLD;
 
   const color = colors[summary.largestRaceIndex];
   const opacity = Math.max(0, (largestRacePortion - minSegregatedPortion) / (1 - minSegregatedPortion));
@@ -214,6 +216,21 @@ function initDataLayer(geoData, dmgData) {
   return dataLayer;
 }
 
+/**
+ * This zip function (generator) operates like the Python zip function.
+ * https://docs.python.org/3/library/functions.html#zip
+ *
+ * @param  {...Array} arrays One or more arrays to combine
+ * @yield  Array
+ */
+function* zip(...arrays) {
+  const minLength = Math.min(...arrays.map((arr) => arr.length));
+
+  for (let i = 0; i < minLength; ++i) {
+    yield arrays.map((arr) => arr[i]);
+  }
+}
+
 function initLegend() {
   const legend = L.control({position: 'bottomright'});
 
@@ -221,14 +238,6 @@ function initLegend() {
     const div = L.DomUtil.create('div', 'info legend');
     const races = RACE_LABELS;
     const colors = d3.schemeCategory10;
-
-    function* zip(...arrays) {
-      const minLength = Math.min(...arrays.map((arr) => arr.length));
-
-      for (let i = 0; i < minLength; ++i) {
-        yield arrays.map((arr) => arr[i]);
-      }
-    }
 
     // Loop through the races and generate a label and colored square for each
     div.innerHTML = `
@@ -245,10 +254,21 @@ function initLegend() {
 
       <p class="legend-description"><em>
         A census block group will only be visible if the percentage of the total
-        population within that block group is dominated (50% or greater) by a
+        population within that block group is dominated (above a threshold) by a
         single racial classification.
       </em></p>
+
+      <h2>Majority Threshold: <span id="majority-threshold-display">50%</span></h2>
+      <input id="majority-threshold" type="range" min="0" max="100" value="50">
     `;
+
+    const thresholdInput = div.querySelector('#majority-threshold');
+    const thresholdDisplay = div.querySelector('#majority-threshold-display');
+    thresholdInput.addEventListener('change', () => {
+      THRESHOLD = thresholdInput.value / 100.0;
+      thresholdDisplay.innerHTML = `${thresholdInput.value}%`;
+      dataLayer.resetStyle();
+    });
 
     return div;
   };
